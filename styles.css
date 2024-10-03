@@ -1,0 +1,114 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Set the body to take full height and apply background animation */
+body {
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    animation: hueShift 20s infinite linear;
+    background: hsl(0, 50%, 50%);
+    transition: background 1s ease;
+}
+
+/* Header styling */
+header {
+    position: absolute;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+header .logo {
+    width: 50px;
+    height: 50px;
+}
+
+header h1 {
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Main content styling */
+main {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Download buttons styling */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.download-button {
+    display: inline-block;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.download-button.apple {
+    background-color: #000;
+}
+
+.download-button.android {
+    background-color: #3DDC84;
+}
+
+.download-button:hover {
+    transform: scale(1.05);
+}
+
+/* Twitch embed styling */
+.twitch-embed {
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.twitch-embed iframe {
+    width: 100%;
+    height: 100%;
+    max-width: 620px;
+    max-height: 378px;
+    border: none;
+}
+
+/* Responsive Design */
+@media (min-width: 600px) {
+    .buttons {
+        flex-direction: row;
+    }
+
+    .twitch-embed iframe {
+        height: 378px;
+        width: 620px;
+    }
+}
+
+/* Background hue shifting animation */
+@keyframes hueShift {
+    0% {
+        background: hsl(0, 50%, 50%);
+    }
+    100% {
+        background: hsl(360, 50%, 50%);
+    }
+}
