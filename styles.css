@@ -14,9 +14,32 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    animation: hueShift 20s infinite linear;
     background: hsl(0, 50%, 50%);
+    animation: hueShift 10s infinite linear;
     transition: background 1s ease;
+}
+
+/* Background hue shifting animation */
+@keyframes hueShift {
+    0% {
+        background: hsl(0, 50%, 50%);
+    }
+
+    25% {
+        background: hsl(90, 50%, 50%);
+    }
+
+    50% {
+        background: hsl(180, 50%, 50%);
+    }
+
+    75% {
+        background: hsl(270, 50%, 50%);
+    }
+
+    100% {
+        background: hsl(360, 50%, 50%);
+    }
 }
 
 /* Header styling */
@@ -100,15 +123,5 @@ main {
     .twitch-embed iframe {
         height: 378px;
         width: 620px;
-    }
-}
-
-/* Background hue shifting animation */
-@keyframes hueShift {
-    0% {
-        background: hsl(0, 50%, 50%);
-    }
-    100% {
-        background: hsl(360, 50%, 50%);
     }
 }
