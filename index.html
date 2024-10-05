@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Six Feet Deep</title>
     <link rel="stylesheet" href="styles.css">
-    
+
     <!-- Fallback for PNG favicon -->
     <link rel="icon" href="assets/favicon.png" type="image/png">
-    
+
     <!-- Apple Touch Icon for iOS devices -->
     <link rel="apple-touch-icon" href="assets/favicon.png">
-    
+
     <!-- Android Chrome -->
     <link rel="icon" sizes="192x192" href="assets/favicon.png">
 
@@ -20,22 +20,67 @@
 
 <body>
     <header>
-        <img src="assets/favicon.png" alt="Logo" class="logo">
-        <h1>Six Feet Deep</h1>
-    </header>
-    <main>
-        <div class="buttons">
-            <a href="https://www.apple.com/app-store/" class="download-button apple">Download on the App Store</a>
-            <a href="https://play.google.com/store" class="download-button android">Get it on Google Play</a>
+        <div class="header-top">
+            <img src="assets/favicon.png" alt="Logo" class="logo">
         </div>
+        <div class="buttons" id="buttonContainer">
+            <button id="iosButton" class="download-button apple">iPhone?</button>
+            <button id="androidButton" class="download-button android">Android?</button>
+            <button id="backButton" class="download-button hidden">Back</button>
+        </div>
+        <div id="instructionsContainer">
+<div id="iosInstructions" class="instructions hidden">
+    <h2>iPhone Instructions</h2>
+    <p>Installing the app on iPhone requires a two-step process:</p>
+
+    <div class="step-container">
+        <ol>
+            <li><strong>Download TestFlight:</strong> First, download the TestFlight app from the App Store:</li>
+            <div class="button-container">
+                <a href="https://apps.apple.com/app/testflight/id899247664" class="instruction-button">Download
+                    TestFlight</a>
+            </div>
+        </ol>
+    </div>
+
+    <div class="step-container">
+        <ol>
+            <li><strong>Join the Beta:</strong> After installing TestFlight, tap the link below to join the TestFlight
+                beta and download the app:</li>
+            <div class="button-container">
+                <a href="https://testflight.apple.com/join/YOUR_TESTFLIGHT_BETA_LINK" class="instruction-button">Join
+                    the Beta</a>
+            </div>
+        </ol>
+    </div>
+
+    <p>Once you've joined the beta, open TestFlight on your iPhone to install and update the app.</p>
+</div>
+
+
+
+
+<div id="androidInstructions" class="instructions hidden">
+    <h2>Android Instructions</h2>
+    <p>Tap below to download:</p>
+
+    <div class="button-container">
+        <a href="https://yourdomain.com/app.apk" class="instruction-button android-download">Download</a>
+    </div>
+
+    <p>To install, you'll need to enable "Install from Unknown Sources" in your phone's security settings.</p>
+</div>
+
+        </div>
+    </header>
+    <!-- <main>
         <div class="twitch-embed">
-            <iframe src="https://player.twitch.tv/?channel=sixfeetdeeppresents&parent=sixfeetdeep.io" frameborder="0"
+            <iframe src="https://player.twitch.tv/?channel=sixfeetdeeppresents&parent=127.0.0.1" frameborder="0"
                 allowfullscreen="true" scrolling="no" height="378" width="620" title="Twitch Stream">
             </iframe>
         </div>
-    </main>
+    </main> -->
 
-    <!-- Optional: Include JavaScript for additional interactivity -->
     <script src="script.js"></script>
 </body>
 

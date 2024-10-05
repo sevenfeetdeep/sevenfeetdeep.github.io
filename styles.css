@@ -12,43 +12,50 @@ body {
     color: #fff;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    background: hsl(0, 50%, 50%);
-    animation: hueShift 10s infinite linear;
+    background: hsl(0, 0%, 0%);
+    /* animation: hueShift 10s infinite linear; */
     transition: background 1s ease;
 }
 
 /* Background hue shifting animation */
 @keyframes hueShift {
     0% {
-        background: hsl(0, 50%, 50%);
+        background: hsl(180, 100%, 50%);
+        /* Cyan */
     }
 
-    25% {
-        background: hsl(90, 50%, 50%);
+    33% {
+        background: hsl(60, 100%, 50%);
+        /* Yellow */
     }
 
-    50% {
-        background: hsl(180, 50%, 50%);
-    }
-
-    75% {
-        background: hsl(270, 50%, 50%);
+    66% {
+        background: hsl(306, 100%, 50%);
+        /* Magenta */
     }
 
     100% {
-        background: hsl(360, 50%, 50%);
+        background: hsl(180, 100%, 50%);
+        /* Cyan */
     }
 }
 
 /* Header styling */
 header {
-    position: absolute;
-    top: 20px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-top {
     display: flex;
     align-items: center;
     gap: 15px;
+    margin-bottom: 15px;
 }
 
 header .logo {
@@ -58,41 +65,89 @@ header .logo {
 
 header h1 {
     font-size: 2rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Main content styling */
-main {
-    text-align: center;
-    padding: 20px;
-}
-
-/* Download buttons styling */
+/* Buttons container */
 .buttons {
     display: flex;
-    flex-direction: column;
     gap: 15px;
-    margin-bottom: 30px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.download-button {
+/* Button container for centering buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.instruction-button {
     display: inline-block;
-    padding: 15px 25px;
+    padding: 12px 24px;
+    background-color: #007aff;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    margin: 10px 0;
+}
+
+.instruction-button:hover {
+    background-color: #005bb5;
+}
+
+/* Back button should be styled to match the other buttons */
+.download-button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
     border: none;
     border-radius: 8px;
-    text-decoration: none;
-    color: #fff;
-    font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
 }
 
 .download-button.apple {
-    background-color: #000;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
 }
 
 .download-button.android {
     background-color: #3DDC84;
+    color: white;
+}
+
+/* Specific styling for Android download button */
+.android-download {
+    padding: 15px 30px;
+    font-size: 1.4rem;
+    background-color: #3DDC84;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.android-download:hover {
+    background-color: #2ba766;
+    transform: scale(1.05);
+}
+
+.download-button.back {
+    background-color: #555;
+    color: white;
 }
 
 .download-button:hover {
@@ -104,6 +159,7 @@ main {
     max-width: 100%;
     overflow: hidden;
     border-radius: 10px;
+    margin-top: 20px;
 }
 
 .twitch-embed iframe {
@@ -116,12 +172,83 @@ main {
 
 /* Responsive Design */
 @media (min-width: 600px) {
-    .buttons {
-        flex-direction: row;
-    }
-
     .twitch-embed iframe {
         height: 378px;
         width: 620px;
     }
+}
+
+/* Ensure the instructions are well spaced and centered */
+.instructions p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+
+/* Style the heading */
+.instructions h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.instructions {
+    display: none;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.instructions ol {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+    text-align: left;
+}
+
+.instructions li {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.testflight-link,
+.apk-link {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #007aff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.apk-link {
+    background-color: #3DDC84;
+}
+
+/* Show instructions */
+.instructions.active {
+    display: block;
+}
+
+/* Adjust buttonContainer when back button is shown */
+.buttons.back-shown .download-button {
+    flex: 1 1 100%;
+}
+
+.buttons.back-shown #backButton {
+    display: block;
+}
+
+/* Style for individual steps with border and background */
+.step-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    text-align: center;
 }
