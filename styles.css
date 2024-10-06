@@ -58,9 +58,13 @@ header {
     margin-bottom: 15px;
 }
 
+/* Logo styling */
 header .logo {
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    /* Increase the size of the logo */
+    height: 150px;
+    margin-bottom: 30px;
+    /* Add some spacing between the logo and the buttons */
 }
 
 header h1 {
@@ -71,10 +75,12 @@ header h1 {
 /* Buttons container */
 .buttons {
     display: flex;
+    flex-direction: column;
+    /* Stack buttons vertically */
     gap: 15px;
     width: 100%;
     max-width: 400px;
-    justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -102,18 +108,17 @@ header h1 {
     background-color: #005bb5;
 }
 
-/* Back button should be styled to match the other buttons */
+/* Download button styling */
 .download-button {
-    padding: 12px 24px;
-    font-size: 1.2rem;
+    padding: 20px;
+    font-size: 1.5rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    display: block;
-    width: 100%;
+    width: 90%;
+    /* Fill most of the screen width */
     max-width: 400px;
-    margin: 10px auto;
 }
 
 .download-button.apple {
@@ -194,6 +199,25 @@ header h1 {
     display: none;
     margin: 20px 0;
     text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+        /* Adjust the value for the amount of rounding */
+        background-color: #000000c7;
+            /* Example of a blue background */
+            padding: 20px;
+                /* Adds 20px space inside the element */
+}
+
+.above-text {
+    margin: 10px 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    /* Adjust the value for the amount of rounding */
+    background-color: #000000;
+    /* Example of a blue background */
+    padding: 10px;
+    /* Adds 20px space inside the element */
 }
 
 .instructions ol {
@@ -251,4 +275,16 @@ header h1 {
     margin: 20px 0;
     border-radius: 10px;
     text-align: center;
+}
+
+.world {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Place the canvas behind all other elements */
+    pointer-events: none;
+    /* Make sure it doesn't block interactions with other elements */
 }
