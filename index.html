@@ -105,6 +105,7 @@
       uniform float uDisplacement;
       uniform float uGradient;
       uniform float aspectRatio;
+      uniform vec2 uRandomOffset;
     
       varying vec2 vUv;
     
@@ -233,7 +234,7 @@
       }
     
       void main() {
-        vec2 new_vUv = vec2(vUv.x, vUv.y);
+        vec2 new_vUv = vec2(vUv.x, vUv.y) + uRandomOffset;
         float mouseDistance = length(new_vUv - uMousePosition);
         float t = uTime * .001;
         float elevation = new_vUv.y * uDensity * 30.0;

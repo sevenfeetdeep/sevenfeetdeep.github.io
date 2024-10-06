@@ -43,21 +43,22 @@ class World {
   }
 
   createPlane(){
-    this.material = new THREE.RawShaderMaterial({
-      vertexShader: document.getElementById( 'vertexShader' ).textContent,
-      fragmentShader: document.getElementById('fragmentShader').textContent,
-     
-      uniforms: { 
-				uTime: { type: 'f', value: 0 },
-				aspectRatio: { type: 'f', value: 1.0 },
-				uHue: {type: 'f', value: 0.5},
-				uHueVariation: {type: 'f', value: 1},
-				uGradient: {type: 'f', value: 1},
-				uDensity: {type: 'f', value: 1},
-				uDisplacement: {type: 'f', value: 1},				
-				uMousePosition: {type: 'v2', value: new THREE.Vector2( 0.5, 0.5 ) }
-    	}
-    });
+	  this.material = new THREE.RawShaderMaterial({
+		  vertexShader: document.getElementById('vertexShader').textContent,
+		  fragmentShader: document.getElementById('fragmentShader').textContent,
+		  uniforms: {
+			  uTime: { type: 'f', value: 0 },
+			  aspectRatio: { type: 'f', value: 1.0 },
+			  uHue: { type: 'f', value: 0.5 },
+			  uHueVariation: { type: 'f', value: 1 },
+			  uGradient: { type: 'f', value: 1 },
+			  uDensity: { type: 'f', value: 1 },
+			  uDisplacement: { type: 'f', value: 1 },
+			  uMousePosition: { type: 'v2', value: new THREE.Vector2(0.5, 0.5) },
+			  uRandomOffset: { type: 'v2', value: new THREE.Vector2(Math.random(), Math.random()) } 
+		  }
+	  });
+
     this.planeGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
 
     this.plane = new THREE.Mesh(this.planeGeometry, this.material);
