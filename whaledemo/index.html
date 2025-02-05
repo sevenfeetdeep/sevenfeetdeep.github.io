@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Six Feet Deep</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Fallback for PNG favicon -->
+    <link rel="icon" href="assets/favicon.png" type="image/png">
+
+    <!-- Apple Touch Icon for iOS devices -->
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+
+    <!-- Android Chrome -->
+    <link rel="icon" sizes="192x192" href="assets/favicon.png">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+			background-color: black;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* Set a maximum width for the iframe */
+            display: flex;
+            justify-content: center;
+        }
+        iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+        }
+        .tracker {
+            position: absolute;
+            width: 20%; /* Set the size of the tracker as a percentage of the iframe */
+            height: auto;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <iframe src="https://www.youtube.com/embed/Sjb2uyMoSA8?si=V5U6pft_MMrCOVGy&amp;start=11&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+        <!-- embed tracker.jpg -->
+        <img src="tracker.jpg" alt="tracker" class="tracker">
+    </div>
+</body>
+
+</html>
