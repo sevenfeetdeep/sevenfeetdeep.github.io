@@ -1,50 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Six Feet Deep</title>
-    <link rel="stylesheet" href="styles.css">
+<!-- Apple Touch Icon for iOS devices -->
+<link rel="apple-touch-icon" href="assets/favicon.png">
 
-    <!-- Fallback for PNG favicon -->
-    <link rel="icon" href="assets/favicon.png" type="image/png">
+<!-- Android Chrome -->
+<link rel="icon" sizes="192x192" href="assets/favicon.png">
 
-    <!-- Apple Touch Icon for iOS devices -->
-    <link rel="apple-touch-icon" href="assets/favicon.png">
-
-    <!-- Android Chrome -->
-    <link rel="icon" sizes="192x192" href="assets/favicon.png">
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-			background-color: black;
-        }
-        .container {
-            position: relative;
-            width: 100%;
-            max-width: 1200px; /* Set a maximum width for the iframe */
-            display: flex;
-            justify-content: center;
-        }
-        iframe {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16 / 9;
-        }
-        .tracker {
-            position: absolute;
-            width: 20%; /* Set the size of the tracker as a percentage of the iframe */
-            height: auto;
-            bottom: 10px;
-            right: 10px;
-        }
-    </style>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: black;
+        color: white; /* Set text color to white for better visibility */
+        font-family: 'Roboto', sans-serif;
+    }
+    .container {
+        position: relative;
+        width: 100%;
+        max-width: 1200px; /* Set a maximum width for the iframe */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    iframe {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+    .tracker {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 5px solid white;
+    }
+    .helper-text {
+        margin-top: 20px;
+        text-align: center;
+        max-width: 1000px;
+        font-size: 22px;
+    }
+</style>
 </head>
 
 <body>
@@ -52,8 +55,21 @@
         <iframe src="https://www.youtube.com/embed/Sjb2uyMoSA8?si=V5U6pft_MMrCOVGy&amp;start=11&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
         <!-- embed tracker.jpg -->
-        <img src="tracker.jpg" alt="tracker" class="tracker">
+        <img src="istockphoto-1455312976-2048x2048.webp" alt="tracker" class="tracker" id="trackerImage">
     </div>
+
+    <div class="helper-text">
+        <p>To experience the augmented reality (AR) content, please scan the image above using your AR-enabled device. Once the image is recognized, the video will play and virtual elements will appear over the video.</p>
+        <p>If the tracking image disappears before you successfully scan it, <b>simply reload the page to try again.</b> </p>
+    </div>
+
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('trackerImage').style.display = 'none';
+            }, 10000); // 10 seconds
+        };
+    </script>
 </body>
 
 </html>
