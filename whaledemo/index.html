@@ -34,12 +34,12 @@
     }
     .tracker {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border: 5px solid white;
+        top: 50%;
+        left: 50%;
+        width: auto;
+        height: 70%;
+        transform: translate(-50%, -50%);
+        object-fit:  ;
     }
     .helper-text {
         margin-top: 20px;
@@ -47,28 +47,38 @@
         max-width: 1000px;
         font-size: 22px;
     }
+    .toggle-button {
+        margin-top: 20px;
+        padding: 15px 30px;
+        font-size: 24px;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+    }
 </style>
 </head>
 
 <body>
     <div class="container">
-        <iframe src="https://www.youtube.com/embed/Sjb2uyMoSA8?si=V5U6pft_MMrCOVGy&amp;start=11&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-        <!-- embed tracker.jpg -->
-        <img src="istockphoto-1455312976-2048x2048.webp" alt="tracker" class="tracker" id="trackerImage">
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Sjb2uyMoSA8?si=haHj4Bw3h256RTLL&amp;controls=0&amp;start=11&amp;mute=1" title="YouTube video player" frameborder="0" allow="autoplay; encrypted-media;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><!-- embed tracker.jpg -->
+        <img src="tracker.jpg" alt="tracker" class="tracker" id="trackerImage">
     </div>
 
+    <button class="toggle-button" onclick="toggleTracker()">Toggle Tracker</button>
+
     <div class="helper-text">
-        <p>To experience the augmented reality (AR) content, please scan the image above using your AR-enabled device. Once the image is recognized, the video will play and virtual elements will appear over the video.</p>
-        <p>If the tracking image disappears before you successfully scan it, <b>simply reload the page to try again.</b> </p>
+        <p>To experience the augmented reality content, please scan the image above.</p>
+        <p>Feel free to toggle the tracking image with the button.</p>
     </div>
 
     <script>
-        window.onload = function() {
-            setTimeout(function() {
-                document.getElementById('trackerImage').style.display = 'none';
-            }, 10000); // 10 seconds
-        };
+        function toggleTracker() {
+            const trackerImage = document.getElementById('trackerImage');
+            if (trackerImage.style.display === 'none') {
+                trackerImage.style.display = 'block';
+            } else {
+                trackerImage.style.display = 'none';
+            }
+        }
     </script>
 </body>
 
