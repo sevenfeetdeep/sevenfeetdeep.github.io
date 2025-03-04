@@ -60,10 +60,12 @@
 <body>
     <div class="container">
         <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Sjb2uyMoSA8?si=haHj4Bw3h256RTLL&controls=0&start=11&mute=1&autoplay=1" title="YouTube video player" frameborder="0" allow="autoplay; encrypted-media;" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><!-- embed tracker.jpg -->
-        <img src="tracker.jpg" alt="tracker" class="tracker" id="trackerImage">
+        <img src="603d61e0fc4962dd0e5305a2_Flux Pavillion Logo2.png" alt="tracker" class="tracker" id="trackerImage">
     </div>
 
     <button class="toggle-button" onclick="toggleTracker()">Toggle Tracker</button>
+    <button class="toggle-button" onclick="toggleVideo()">Toggle Video</button>
+
 
     <div class="helper-text">
         <p>To experience the augmented reality content, please scan the image above.</p>
@@ -77,6 +79,14 @@
                 trackerImage.style.display = 'block';
             } else {
                 trackerImage.style.display = 'none';
+            }
+        }
+        function toggleVideo() {
+            const iframe = document.querySelector('iframe');
+            if (iframe.style.visibility === 'hidden') {
+                iframe.style.visibility = 'visible';
+            } else {
+                iframe.style.visibility = 'hidden';
             }
         }
     </script>
