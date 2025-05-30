@@ -300,14 +300,14 @@
             try {
                 console.log('Fetching all available shaders...');
                 let allShaderIds = [];
-                const batchSize = 50;
+                const batchSize = 200;
                 let consecutiveEmptyResults = 0;
                 
                 // Update loading message
                 document.getElementById('loading').textContent = 'Fetching shader database... 0 found';
                 
                 // Fetch shaders in batches until we get no more results
-                for (let from = 0; from < 20000; from += batchSize) {
+                for (let from = 0; from < 10000; from += batchSize) {
                     const response = await fetch(`https://www.shadertoy.com/api/v1/shaders/query?key=${apiKey}&from=${from}&num=${batchSize}`);
                     const data = await response.json();
                     
