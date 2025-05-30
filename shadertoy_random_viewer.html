@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Shadertoy Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #shadertoy-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #shadertoy-frame-next {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        #overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10;
+            max-width: 300px;
+        }
+        
+        #shader-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10;
+            max-width: 300px;
+        }
+        
+        #timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        button {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        #api-key-input {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            z-index: 20;
+        }
+        
+        input {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #222;
+            color: white;
+            width: 300px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        #mouse-indicator {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 15;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="api-key-input" class="hidden">
+            <h2>Enter Shadertoy API Key</h2>
+            <p>Get your free API key from <a href="https://www.shadertoy.com/howto" target="_blank" style="color: #4CAF50;">shadertoy.com/howto</a></p>
+            <input type="text" id="api-key" placeholder="Enter your API key here">
+            <br>
+            <button onclick="startViewer()">Start Viewer</button>
+            <div style="margin-top: 15px; font-size: 12px; color: #888;">
+                <p>First run: Downloads all available popular shaders</p>
+                <p>Subsequent runs: Loads instantly from browser cache</p>
+                <button onclick="clearCache()" style="margin-top: 10px; background: #444;">Clear Cache</button>
+            </div>
+        </div>
+        
+        <div id="overlay" class="hidden">
+            <div><strong>Current Shader:</strong></div>
+            <div id="shader-name">Loading...</div>
+            <div id="shader-author">by Unknown</div>
+            <div style="margin-top: 10px; font-size: 12px;">
+                Press 'N' for next, 'Space' to pause, 'U' to toggle UI, 'M' for auto mouse
+            </div>
+        </div>
+        
+        <div id="shader-info" class="hidden">
+            <div><strong>Current Shader:</strong></div>
+            <div id="shader-name-minimal">Loading...</div>
+            <div id="shader-author-minimal">by Unknown</div>
+        </div>
+        
+        <div id="timer" class="hidden">60</div>
+        
+        <iframe id="shadertoy-frame" class="hidden"></iframe>
+        <iframe id="shadertoy-frame-next" class="hidden"></iframe>
+        
+        <div id="loading" class="loading hidden">Loading random shader...</div>
+
+        <div id="mouse-indicator" class="hidden"></div>
+        
+        <div id="controls" class="hidden">
+            <button onclick="nextShader()">Next Shader</button>
+            <button onclick="togglePause()">Pause/Resume</button>
+            <button onclick="toggleFullscreen()">Toggle Fullscreen</button>
+            <button onclick="toggleUI()">Toggle UI</button>
+            <button onclick="toggleMouseSimulation()">Auto Mouse</button>
+        </div>
+    </div>
+
+    <script>
+        // HARDCODE YOUR API KEY HERE - Replace 'YOUR_API_KEY_HERE' with your actual key
+        const HARDCODED_API_KEY = 'YOUR_API_KEY_HERE';
+        
+        let apiKey = '';
+        let currentShaderIds = [];
+        let currentShaderIndex = 0;
+        let timer;
+        let countdown;
+        let timeLeft = 60;
+        let isPaused = false;
+        let currentShaderData = null;
+        let uiVisible = true;
+        let mouseSimulation = null;
+        let currentIframe = 'frame1';
+        let isTransitioning = false;
+
+        // Initialize the app
+        function initializeApp() {
+            if (HARDCODED_API_KEY && HARDCODED_API_KEY !== 'YOUR_API_KEY_HERE') {
+                // Use hardcoded API key and start immediately
+                apiKey = HARDCODED_API_KEY;
+                startViewer();
+            } else {
+                // Show API key input screen
+                document.getElementById('api-key-input').classList.remove('hidden');
+            }
+        }
+
+        // Clear shader cache
+        function clearCache() {
+            try {
+                // Note: In browser environment, we would use localStorage
+                // For artifact environment, we'll use a temporary variable
+                shaderCache = null;
+                alert('Cache cleared! The next run will re-download all shaders.');
+            } catch (error) {
+                console.error('Error clearing cache:', error);
+                alert('Error clearing cache.');
+            }
+        }
+
+        // In-memory cache for artifacts environment
+        let shaderCache = null;
+
+        // Check if shader cache exists
+        function loadShadersFromCache() {
+            try {
+                // In browser environment, use localStorage
+                if (typeof localStorage !== 'undefined') {
+                    const cachedData = localStorage.getItem('shadertoy_cache');
+                    const timestamp = localStorage.getItem('shadertoy_cache_timestamp');
+                    
+                    if (cachedData) {
+                        const shaderIds = JSON.parse(cachedData);
+                        if (shaderIds && shaderIds.length > 0) {
+                            currentShaderIds = shaderIds;
+                            shuffleArray(currentShaderIds);
+                            
+                            const cacheAge = timestamp ? Math.floor((Date.now() - parseInt(timestamp)) / (1000 * 60 * 60 * 24)) : 'unknown';
+                            console.log(`Loaded ${currentShaderIds.length} shaders from cache (${cacheAge} days old)`);
+                            return true;
+                        }
+                    }
+                }
+                
+                // In artifact environment, use memory cache
+                if (shaderCache && shaderCache.length > 0) {
+                    currentShaderIds = [...shaderCache];
+                    shuffleArray(currentShaderIds);
+                    console.log(`Loaded ${currentShaderIds.length} shaders from memory cache`);
+                    return true;
+                }
+            } catch (error) {
+                console.log('No valid cache found, will create new one');
+            }
+            return false;
+        }
+
+        // Shuffle array in place
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Create cache with available popular shaders
+        async function createShaderCache() {
+            try {
+                console.log('Fetching all available shaders...');
+                let allShaderIds = [];
+                const batchSize = 50;
+                let consecutiveEmptyResults = 0;
+                
+                // Update loading message
+                document.getElementById('loading').textContent = 'Fetching shader database... 0 found';
+                
+                // Fetch shaders in batches until we get no more results
+                for (let from = 0; from < 20000; from += batchSize) {
+                    const response = await fetch(`https://www.shadertoy.com/api/v1/shaders/query?key=${apiKey}&from=${from}&num=${batchSize}`);
+                    const data = await response.json();
+                    
+                    if (data.Error) {
+                        console.error('API Error:', data.Error);
+                        break;
+                    }
+                    
+                    if (data.Results && data.Results.length > 0) {
+                        allShaderIds.push(...data.Results);
+                        consecutiveEmptyResults = 0;
+                        document.getElementById('loading').textContent = `Fetching shader database... ${allShaderIds.length} found`;
+                        console.log(`Fetched ${allShaderIds.length} shaders so far...`);
+                    } else {
+                        consecutiveEmptyResults++;
+                        console.log(`No results from ${from}, consecutive empty: ${consecutiveEmptyResults}`);
+                        
+                        if (consecutiveEmptyResults >= 3) {
+                            console.log('No more shaders available, finishing...');
+                            break;
+                        }
+                    }
+                    
+                    // Small delay to be nice to the API
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                if (allShaderIds.length === 0) {
+                    throw new Error('No shaders found');
+                }
+                
+                // Remove duplicates
+                allShaderIds = [...new Set(allShaderIds)];
+                
+                // Save to cache
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('shadertoy_cache', JSON.stringify(allShaderIds));
+                    localStorage.setItem('shadertoy_cache_timestamp', Date.now().toString());
+                }
+                
+                shaderCache = allShaderIds;
+                currentShaderIds = [...allShaderIds];
+                shuffleArray(currentShaderIds);
+                
+                console.log(`Created cache with ${currentShaderIds.length} shaders`);
+                document.getElementById('loading').textContent = `Shader database ready! ${currentShaderIds.length} shaders cached`;
+                
+                return true;
+            } catch (error) {
+                console.error('Error creating shader cache:', error);
+                return false;
+            }
+        }
+
+        // Get random shaders
+        async function fetchRandomShaders() {
+            const cacheLoaded = loadShadersFromCache();
+            if (cacheLoaded) {
+                currentShaderIndex = 0;
+                return true;
+            }
+            
+            const cacheCreated = await createShaderCache();
+            if (cacheCreated) {
+                currentShaderIndex = 0;
+                return true;
+            }
+            
+            // Fallback to original API method
+            try {
+                const response = await fetch(`https://www.shadertoy.com/api/v1/shaders/query?key=${apiKey}&num=50`);
+                const data = await response.json();
+                
+                if (data.Error) {
+                    throw new Error(data.Error);
+                }
+                
+                currentShaderIds = data.Results;
+                shuffleArray(currentShaderIds);
+                currentShaderIndex = 0;
+                return true;
+            } catch (error) {
+                console.error('Error fetching shaders:', error);
+                alert('Error fetching shaders. Please check your API key.');
+                return false;
+            }
+        }
+
+        // Get shader details
+        async function getShaderDetails(shaderId) {
+            try {
+                const response = await fetch(`https://www.shadertoy.com/api/v1/shaders/${shaderId}?key=${apiKey}`);
+                const data = await response.json();
+                return data.Shader;
+            } catch (error) {
+                console.error('Error fetching shader details:', error);
+                return null;
+            }
+        }
+
+        // Load a shader with seamless transition
+        async function loadShader(shaderId) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            
+            document.getElementById('loading').classList.remove('hidden');
+            
+            const shaderData = await getShaderDetails(shaderId);
+            if (shaderData) {
+                currentShaderData = shaderData;
+                
+                // Update shader info
+                document.getElementById('shader-name').textContent = shaderData.info.name;
+                document.getElementById('shader-author').textContent = `by ${shaderData.info.username}`;
+                document.getElementById('shader-name-minimal').textContent = shaderData.info.name;
+                document.getElementById('shader-author-minimal').textContent = `by ${shaderData.info.username}`;
+                
+                // Determine which iframe to use next
+                const currentFrame = document.getElementById('shadertoy-frame');
+                const nextFrame = document.getElementById('shadertoy-frame-next');
+                
+                let targetFrame, hiddenFrame;
+                if (currentIframe === 'frame1') {
+                    targetFrame = nextFrame;
+                    hiddenFrame = currentFrame;
+                    currentIframe = 'frame2';
+                } else {
+                    targetFrame = currentFrame;
+                    hiddenFrame = nextFrame;
+                    currentIframe = 'frame1';
+                }
+                
+                // Load shader in the hidden iframe
+                targetFrame.src = `https://www.shadertoy.com/embed/${shaderId}?gui=false&t=10&paused=false&muted=false`;
+                
+                // Wait for the iframe to load
+                const loadPromise = new Promise((resolve) => {
+                    const onLoad = () => {
+                        targetFrame.removeEventListener('load', onLoad);
+                        resolve();
+                    };
+                    targetFrame.addEventListener('load', onLoad);
+                    
+                    // Fallback timeout in case load event doesn't fire
+                    setTimeout(resolve, 3000);
+                });
+                
+                await loadPromise;
+                
+                // Show both frames and hide loading
+                targetFrame.classList.remove('hidden');
+                hiddenFrame.classList.remove('hidden');
+                document.getElementById('loading').classList.add('hidden');
+                
+                // Wait a bit for the shader to initialize
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Fade transition
+                targetFrame.style.opacity = '1';
+                hiddenFrame.style.opacity = '0';
+                
+                // After transition, hide the old frame and clear its src
+                setTimeout(() => {
+                    hiddenFrame.classList.add('hidden');
+                    hiddenFrame.src = 'about:blank';
+                    isTransitioning = false;
+                }, 300);
+            } else {
+                isTransitioning = false;
+            }
+        }
+
+        // Next shader
+        async function nextShader() {
+            if (currentShaderIds.length === 0 || isTransitioning) return;
+            
+            currentShaderIndex = Math.floor(Math.random() * currentShaderIds.length);
+            await loadShader(currentShaderIds[currentShaderIndex]);
+            resetTimer();
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (isPaused) return;
+            
+            countdown = setInterval(() => {
+                if (isPaused) return;
+                
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    nextShader();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            timeLeft = 60;
+            document.getElementById('timer').textContent = timeLeft;
+            startTimer();
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            if (!isPaused) {
+                startTimer();
+            } else {
+                clearInterval(countdown);
+            }
+        }
+
+        // Mouse simulation functions - improved approach
+        function startMouseSimulation() {
+            const indicator = document.getElementById('mouse-indicator');
+            indicator.classList.remove('hidden');
+            
+            let time = 0;
+            mouseSimulation = setInterval(() => {
+                time += 0.02;
+                
+                // Create smooth circular motion with some randomness
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const radiusX = window.innerWidth * 0.25;
+                const radiusY = window.innerHeight * 0.25;
+                
+                const x = centerX + Math.cos(time) * radiusX + Math.sin(time * 1.3) * radiusX * 0.3;
+                const y = centerY + Math.sin(time) * radiusY + Math.cos(time * 1.7) * radiusY * 0.3;
+                
+                // Update indicator position
+                indicator.style.left = x + 'px';
+                indicator.style.top = y + 'px';
+                
+                // Create and dispatch mouse move event on the document
+                const event = new MouseEvent('mousemove', {
+                    clientX: x,
+                    clientY: y,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                document.dispatchEvent(event);
+                
+                // Also try to send to iframe (may not work due to cross-origin)
+                const iframe = document.getElementById('shadertoy-frame');
+                if (iframe && iframe.contentWindow) {
+                    try {
+                        // This will likely fail due to cross-origin restrictions
+                        iframe.contentWindow.postMessage({
+                            type: 'mousemove',
+                            x: x - iframe.offsetLeft,
+                            y: y - iframe.offsetTop
+                        }, '*');
+                    } catch (e) {
+                        // Expected to fail for cross-origin iframes
+                    }
+                }
+            }, 16); // ~60fps
+        }
+        
+        function stopMouseSimulation() {
+            if (mouseSimulation) {
+                clearInterval(mouseSimulation);
+                mouseSimulation = null;
+            }
+            document.getElementById('mouse-indicator').classList.add('hidden');
+        }
+        
+        function toggleMouseSimulation() {
+            mouseSimulationEnabled = !mouseSimulationEnabled;
+            
+            if (mouseSimulationEnabled) {
+                startMouseSimulation();
+                console.log('Mouse simulation enabled (visual indicator only - iframe mouse events blocked by CORS)');
+            } else {
+                stopMouseSimulation();
+                console.log('Mouse simulation disabled');
+            }
+        }
+
+        function toggleUI() {
+            uiVisible = !uiVisible;
+            
+            const timer = document.getElementById('timer');
+            const controls = document.getElementById('controls');
+            const overlay = document.getElementById('overlay');
+            const shaderInfo = document.getElementById('shader-info');
+            
+            if (uiVisible) {
+                timer.classList.remove('hidden');
+                controls.classList.remove('hidden');
+                overlay.classList.remove('hidden');
+                shaderInfo.classList.add('hidden');
+            } else {
+                timer.classList.add('hidden');
+                controls.classList.add('hidden');
+                overlay.classList.add('hidden');
+                shaderInfo.classList.remove('hidden');
+            }
+        }
+
+        // Fullscreen functions
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Start the viewer
+        async function startViewer() {
+            if (!apiKey) {
+                const keyInput = document.getElementById('api-key');
+                apiKey = keyInput.value.trim();
+                
+                if (!apiKey) {
+                    alert('Please enter your API key');
+                    return;
+                }
+            }
+            
+            // Hide API input
+            document.getElementById('api-key-input').classList.add('hidden');
+            
+            // Show UI elements
+            document.getElementById('overlay').classList.remove('hidden');
+            document.getElementById('timer').classList.remove('hidden');
+            document.getElementById('controls').classList.remove('hidden');
+            
+            // Show loading message
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('loading').textContent = 'Loading shader cache...';
+            
+            // Fetch initial shaders and start
+            const success = await fetchRandomShaders();
+            if (success) {
+                document.getElementById('loading').textContent = 'Loading first shader...';
+                await loadShader(currentShaderIds[0]);
+                startTimer();
+                
+                // Auto fullscreen
+                setTimeout(() => {
+                    document.documentElement.requestFullscreen().catch(e => {
+                        console.log('Fullscreen request failed:', e);
+                    });
+                }, 1000);
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!e.key) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'n':
+                    nextShader();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    togglePause();
+                    break;
+                case 'u':
+                    toggleUI();
+                    break;
+                case 'f':
+                    toggleFullscreen();
+                    break;
+                case 'm':
+                    toggleMouseSimulation();
+                    break;
+                case 'escape':
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+
+        // Handle iframe load errors for both iframes
+        document.getElementById('shadertoy-frame').addEventListener('error', () => {
+            console.log('Shader failed to load, trying next one...');
+            if (!isTransitioning) nextShader();
+        });
+        
+        document.getElementById('shadertoy-frame-next').addEventListener('error', () => {
+            console.log('Shader failed to load, trying next one...');
+            if (!isTransitioning) nextShader();
+        });
+
+        // Initialize when page loads - also override alert/confirm
+        window.addEventListener('load', () => {
+            // Mute all popups/alerts/confirms to prevent shader interruptions
+            window.alert = function() { console.log('Alert blocked:', arguments); };
+            window.confirm = function() { console.log('Confirm blocked:', arguments); return true; };
+            window.prompt = function() { console.log('Prompt blocked:', arguments); return null; };
+            
+            // Also override for iframe contexts (though may not work due to CORS)
+            const originalAlert = window.alert;
+            const originalConfirm = window.confirm;
+            const originalPrompt = window.prompt;
+            
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
