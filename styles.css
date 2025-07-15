@@ -17,6 +17,14 @@ body {
     background: hsl(0, 0%, 0%);
     /* animation: hueShift 10s infinite linear; */
     transition: background 1s ease;
+    overflow: hidden;
+    /* Prevent scrolling */
+}
+
+/* Prevent scrolling on html as well */
+html {
+    height: 100%;
+    overflow: hidden;
 }
 
 /* Background hue shifting animation */
@@ -49,6 +57,12 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0;
+    /* Prevent header from shrinking */
+    max-height: 100vh;
+    /* Ensure header doesn't exceed viewport height */
+    overflow: hidden;
+    /* Prevent header content from overflowing */
 }
 
 .header-top {
@@ -60,11 +74,14 @@ header {
 
 /* Logo styling */
 header .logo {
-    width: 150px;
-    /* Increase the size of the logo */
-    height: 150px;
+    width: min(150px, 20vw);
+    /* Responsive logo size */
+    height: min(150px, 20vw);
+    /* Responsive logo size */
     margin-bottom: 30px;
     /* Add some spacing between the logo and the buttons */
+    flex-shrink: 0;
+    /* Prevent logo from shrinking */
 }
 
 header h1 {
@@ -75,13 +92,16 @@ header h1 {
 /* Buttons container */
 .buttons {
     display: flex;
-    flex-direction: column;
-    /* Stack buttons vertically */
-    gap: 15px;
+    flex-direction: row;
+    /* Stack buttons horizontally on wider screens */
+    gap: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 800px;
     align-items: center;
+    justify-content: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    /* Allow wrapping if needed */
 }
 
 /* Button container for centering buttons */
@@ -110,25 +130,92 @@ header h1 {
 
 /* Download button styling */
 .download-button {
-    padding: 20px;
+    padding: 10px;
     font-size: 1.5rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 90%;
-    /* Fill most of the screen width */
-    max-width: 400px;
+    transition: transform 0.3s ease;
+    background: none;
+    /* Remove background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.download-button img {
+    height: min(8vw, 80px);
+    /* Responsive size: 8% of viewport width, max 80px */
+    min-height: 50px;
+    /* Minimum size */
+    width: auto;
 }
 
 .download-button.apple {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    background: none;
+    /* Remove white background */
 }
 
 .download-button.android {
-    background-color: #3DDC84;
-    color: white;
+    background: none;
+    /* Remove green background */
+}
+
+/* Responsive Design for buttons */
+@media (max-width: 768px) {
+    .buttons {
+        flex-direction: column;
+        /* Stack vertically on mobile */
+        gap: 15px;
+        max-width: 100%;
+    }
+    
+    .download-button img {
+        height: min(12vw, 70px);
+        /* Larger relative size on mobile */
+        min-height: 45px;
+    }
+    
+    /* Reduce header padding on mobile */
+    header {
+        padding: 15px;
+    }
+    
+    header .logo {
+        width: min(120px, 25vw);
+        height: min(120px, 25vw);
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .download-button img {
+        height: min(15vw, 60px);
+        /* Even larger relative size on very small screens */
+        min-height: 40px;
+    }
+    
+    /* Further reduce spacing on very small screens */
+    header {
+        padding: 10px;
+    }
+    
+    header .logo {
+        width: min(100px, 30vw);
+        height: min(100px, 30vw);
+        margin-bottom: 15px;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+    .download-button img {
+        height: min(6vw, 100px);
+        /* Smaller relative size on large screens, max 100px */
+        min-height: 60px;
+    }
 }
 
 /* Specific styling for Android download button */
